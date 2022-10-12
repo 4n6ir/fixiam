@@ -6,9 +6,39 @@ def handler(event, context):
 
     account = os.environ['ACCOUNT']
     region = os.environ['REGION']
-    analyzer = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/organization'
 
-    print(analyzer)
+    #awsaccount = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/awsaccount'
+    organization = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/organization'
+
+    accessanalyzer = boto3.client('accessanalyzer')
+    sns_client = boto3.client('sns')
+    
+    paginator = accessanalyzer.get_paginator('list_findings')
+    
+    pages = paginator.paginate(
+        analyzerArn = organization
+    )
+    
+    for page in pages:
+        for finding in page['findings']:
+            try:
+                if finding['error'] == 'ACCESS_DENIED':
+                    response = sns_client.publish(
+                        TopicArn = os.environ['SNS_TOPIC'],
+                        Subject = 'IAM Access Analyzer Alert - ERROR',
+                        Message = str(finding)
+                    )
+            except:
+                pass
+            try:
+                if finding['isPublic'] == True:
+                    response = sns_client.publish(
+                        TopicArn = os.environ['SNS_TOPIC'],
+                        Subject = 'IAM Access Analyzer Alert - PUBLIC',
+                        Message = str(finding)
+                    )
+            except:
+                pass
 
     return {
         'statusCode': 200,
