@@ -22,19 +22,21 @@ def handler(event, context):
     for page in pages:
         for finding in page['findings']:
             try:
-                if finding['error'] == 'ACCESS_DENIED':
+                if finding['error'] == 'ACCESS_DENIED' and finding['status'] != 'ARCHIVED':
+                    print(finding)
                     response = sns_client.publish(
                         TopicArn = os.environ['SNS_TOPIC'],
-                        Subject = 'IAM Access Analyzer Alert - ERROR',
+                        Subject = 'IAM Access Analyzer Alert',
                         Message = str(finding)
                     )
             except:
                 pass
             try:
-                if finding['isPublic'] == True:
+                if finding['isPublic'] == True and finding['status'] != 'ARCHIVED':
+                    print(finding)
                     response = sns_client.publish(
                         TopicArn = os.environ['SNS_TOPIC'],
-                        Subject = 'IAM Access Analyzer Alert - PUBLIC',
+                        Subject = 'IAM Access Analyzer Alert',
                         Message = str(finding)
                     )
             except:
