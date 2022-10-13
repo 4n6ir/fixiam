@@ -108,10 +108,7 @@ class FixiamStack(Stack):
                 actions = [
                     'access-analyzer:ListFindings'
                 ],
-                resources = [
-                    organization.attr_arn,
-                    awsaccount.attr_arn
-                ]
+                resources = ['*']
             )
         )
 
@@ -129,37 +126,19 @@ class FixiamStack(Stack):
 
 ### ERROR LAMBDA ###
 
-        if region == 'me-central-1':
-    
-            error = _lambda.Function(
-                self, 'error',
-                runtime = _lambda.Runtime.PYTHON_3_9,
-                code = _lambda.Code.from_asset('error'),
-                handler = 'error.handler',
-                role = role,
-                environment = dict(
-                    SNS_TOPIC = operationstopic.topic_arn
-                ),
-                #architecture = _lambda.Architecture.ARM_64,
-                timeout = Duration.seconds(7),
-                memory_size = 128
-            )
-
-        else:
-
-            error = _lambda.Function(
-                self, 'error',
-                runtime = _lambda.Runtime.PYTHON_3_9,
-                code = _lambda.Code.from_asset('error'),
-                handler = 'error.handler',
-                role = role,
-                environment = dict(
-                    SNS_TOPIC = operationstopic.topic_arn
-                ),
-                architecture = _lambda.Architecture.ARM_64,
-                timeout = Duration.seconds(7),
-                memory_size = 128
-            )
+        error = _lambda.Function(
+            self, 'error',
+            runtime = _lambda.Runtime.PYTHON_3_9,
+            code = _lambda.Code.from_asset('error'),
+            handler = 'error.handler',
+            role = role,
+            environment = dict(
+                SNS_TOPIC = operationstopic.topic_arn
+            ),
+            architecture = _lambda.Architecture.ARM_64,
+            timeout = Duration.seconds(7),
+            memory_size = 128
+        )
 
         errorlogs = _logs.LogGroup(
             self, 'errorlogs',
@@ -170,47 +149,24 @@ class FixiamStack(Stack):
 
 ### ALERT LAMBDA ###
 
-        if region == 'me-central-1':
-
-            alert = _lambda.Function(
-                self, 'alert',
-                code = _lambda.Code.from_asset('alert'),
-                #architecture = _lambda.Architecture.ARM_64,
-                runtime = _lambda.Runtime.PYTHON_3_9,
-                timeout = Duration.seconds(900),
-                handler = 'alert.handler',
-                environment = dict(
-                    ACCOUNT = account,
-                    REGION = region,
-                    SNS_TOPIC = securitytopic.topic_arn
-                ),
-                memory_size = 256,
-                role = role,
-                layers = [
-                    layer
-                ]
-            )
-
-        else:
-
-            alert = _lambda.Function(
-                self, 'alert',
-                code = _lambda.Code.from_asset('alert'),
-                architecture = _lambda.Architecture.ARM_64,
-                runtime = _lambda.Runtime.PYTHON_3_9,
-                timeout = Duration.seconds(900),
-                handler = 'alert.handler',
-                environment = dict(
-                    ACCOUNT = account,
-                    REGION = region,
-                    SNS_TOPIC = securitytopic.topic_arn
-                ),
-                memory_size = 256,
-                role = role,
-                layers = [
-                    layer
-                ]
-            )
+        alert = _lambda.Function(
+            self, 'alert',
+            code = _lambda.Code.from_asset('alert'),
+            architecture = _lambda.Architecture.ARM_64,
+            runtime = _lambda.Runtime.PYTHON_3_9,
+            timeout = Duration.seconds(900),
+            handler = 'alert.handler',
+            environment = dict(
+                ACCOUNT = account,
+                REGION = region,
+                SNS_TOPIC = securitytopic.topic_arn
+            ),
+            memory_size = 256,
+            role = role,
+            layers = [
+                layer
+            ]
+        )
 
         logs = _logs.LogGroup(
             self, 'logs',

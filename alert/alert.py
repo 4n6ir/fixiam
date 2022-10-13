@@ -7,7 +7,7 @@ def handler(event, context):
     account = os.environ['ACCOUNT']
     region = os.environ['REGION']
 
-    awsaccount = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/awsaccount'
+    #awsaccount = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/awsaccount'
     organization = 'arn:aws:access-analyzer:'+region+':'+account+':analyzer/organization'
 
     accessanalyzer = boto3.client('accessanalyzer')

@@ -13,16 +13,18 @@ regions = client.describe_regions()
 
 for region in regions['Regions']:
 
-    FixiamStack(
-        app, 'FixiamStack-'+region['RegionName'],
-        env = cdk.Environment(
-            account = os.getenv('CDK_DEFAULT_ACCOUNT'),
-            region = region['RegionName']
-        ),
-        synthesizer = cdk.DefaultStackSynthesizer(
-            qualifier = '4n6ir'
+    if region['RegionName'] != 'me-central-1':
+
+        FixiamStack(
+            app, 'FixiamStack-'+region['RegionName'],
+            env = cdk.Environment(
+                account = os.getenv('CDK_DEFAULT_ACCOUNT'),
+                region = region['RegionName']
+            ),
+            synthesizer = cdk.DefaultStackSynthesizer(
+                qualifier = '4n6ir'
+            )
         )
-    )
 
 cdk.Tags.of(app).add('fixiam','fixiam')
 
