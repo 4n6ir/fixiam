@@ -244,6 +244,6 @@ class FixiamStack(Stack):
             )
         )
 
-        #alertevent.add_target(
-        #    _targets.LambdaFunction(alert)
-        #)
+        alertevent.add_target(
+            _targets.LambdaFunction(alert)
+        )
