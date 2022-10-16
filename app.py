@@ -26,6 +26,7 @@ for region in regions['Regions']:
             )
         )
 
-cdk.Tags.of(app).add('fixiam','fixiam')
+cdk.Tags.of(app).add('Alias','ALL')
+cdk.Tags.of(app).add('GitHub','https://github.com/4n6ir/fixiam.git')
 
 app.synth()
