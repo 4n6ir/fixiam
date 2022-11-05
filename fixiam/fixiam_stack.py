@@ -1,4 +1,7 @@
+import cdk_nag
+
 from aws_cdk import (
+    Aspects,
     Stack,
     aws_accessanalyzer as _accessanalyzer
 )
@@ -9,6 +12,13 @@ class FixiamStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        Aspects.of(self).add(
+             cdk_nag.AwsSolutionsChecks(
+                 log_ignores = True,
+                 verbose = True
+             )
+         )
 
         organization = _accessanalyzer.CfnAnalyzer(
             self, 'organization',
