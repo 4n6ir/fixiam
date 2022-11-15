@@ -13,7 +13,7 @@ regions = client.describe_regions()
 
 for region in regions['Regions']:
 
-    if region['RegionName'] != 'me-central-1':
+    if region['RegionName'] != 'me-central-1' and region['RegionName'] != 'eu-central-2':
 
         FixiamStack(
             app, 'FixiamStack-'+region['RegionName'],
