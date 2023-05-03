@@ -14,10 +14,24 @@ class FixiamStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         Aspects.of(self).add(
-            cdk_nag.AwsSolutionsChecks(
-                log_ignores = True,
-                verbose = True
-            )
+            cdk_nag.AwsSolutionsChecks()
+        )
+
+        Aspects.of(self).add(
+            cdk_nag.HIPAASecurityChecks()    
+        )
+
+        Aspects.of(self).add(
+            cdk_nag.NIST80053R5Checks()
+        )
+
+        Aspects.of(self).add(
+            cdk_nag.PCIDSS321Checks()
+        )
+
+        cdk_nag.NagSuppressions.add_stack_suppressions(
+            self, suppressions = [
+            ]
         )
 
         organization = _accessanalyzer.CfnAnalyzer(
